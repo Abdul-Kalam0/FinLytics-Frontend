@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
+  const navigate = useNavigate();
+  const { loading, register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,8 +19,15 @@ export const Register = () => {
       [name]: value,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await register(formData);
+      toast.success("Register successful");
+      navigate("/");
+    } catch (error) {
+      toast.error(error);
+    }
   };
   return (
     <>
