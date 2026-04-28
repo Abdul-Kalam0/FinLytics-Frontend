@@ -9,18 +9,18 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   //first check user is already loggedin or not
+  const checkAuth = async () => {
+    try {
+      const res = await API.get("/users/me");
+      setUser(res.data.data);
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await API.get("/users/me");
-        setUser(res.data.user);
-        console.log(user);
-      } catch (err) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
     checkAuth();
   }, []);
 
@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const res = await API.post("/auth/register", formData);
-      setUser(res.data);
       return res;
     } catch (err) {
       const message = err.response?.data?.message || "Registration failed";
@@ -42,7 +41,8 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const res = await API.post("/auth/login", form);
-      setUser(res.data.data);
+      // setUser(res.data);
+      await checkAuth();
       return res;
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";

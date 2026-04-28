@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const Login = () => {
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-  const { login, loading } = useAuth();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
